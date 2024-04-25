@@ -12,7 +12,7 @@
 4. Change the directory to the project folder i.e copied path
 5. Move the directory where manage.py file exist
 6. Install all the package from requirement.txt file by **pip install -r requirements.txt**
-7. Run the command **python manage.py runserver** to deploy the model in **localhost:8000**
+7. Run the command **python manage.py runserver** to deploy the chatbot in **localhost:8000**
 8. Open **localhost:8000** to interact and learn with ClimateAIBot.
 <br/>
 
