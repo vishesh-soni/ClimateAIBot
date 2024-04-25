@@ -16,6 +16,9 @@
 8. Open **localhost:8000** to interact and learn with ClimateAIBot.
 <br/>
 
+### Note
+Add your HUGGINGFACEHUB_API_TOKEN inside **chatmodel.py**. 
+
 
 ### Home Page 
 
