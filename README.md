@@ -19,6 +19,8 @@
 
 ### Home Page 
 
+![image](https://github.com/vishesh-soni/ClimateAIBot/assets/92041466/e61f9c71-91f6-41bf-ad51-aae39b36f55a)
+
 
 
 
