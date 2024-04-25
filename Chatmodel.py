@@ -11,9 +11,9 @@ from langchain.docstore.document import Document
 
 
 
-os.environ["HUGGINGFACEHUB_API_TOKEN"] = "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"
+os.environ["HUGGINGFACEHUB_API_TOKEN"] = ""
 llm = HuggingFaceHub(repo_id="mistralai/Mistral-7B-Instruct-v0.1",model_kwargs={
-    "temperature":0.5,"max_length":128
+    "temperature":0.5,"max_length":1024
 })
 
 
