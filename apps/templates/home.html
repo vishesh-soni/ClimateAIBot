@@ -1,0 +1,167 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Change font family */
+            background-color: #f9f9f9; /* Light background color for the page */
+        }
+        .chat-container {
+            width: 800px; /* Increase width to 2x */
+            margin: 50px auto; /* Center the chat container */
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #fff; /* White background color for the chat container */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+        }
+        .chat-bubble {
+            background-color: #f0f0f0;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 15px;
+            clear: both;
+            overflow: hidden; /* Ensure proper containment of avatar */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Match font family of chat */
+        }
+        .user-bubble {
+            text-align: right;
+        }
+        .chat-avatar {
+            float: left;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 20px; /* Increase gap between chat bubble and avatar */
+            margin-left: 20px; /* Increase gap between chat bubble and avatar */
+        }
+        .chat-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .user-avatar {
+            float: right;
+        }
+        .bot-avatar {
+            float: left;
+        }
+        #user-input-container {
+            display: flex;
+            align-items: center; /* Align items vertically */
+            justify-content: space-between; /* Distribute space evenly */
+            margin-bottom: 20px; /* Increase margin bottom */
+        }
+        #user-input {
+            flex: 1; /* Take remaining space */
+            padding: 10px; /* Add padding */
+            border: 1px solid #ccc; /* Add border */
+            border-radius: 5px; /* Add border radius */
+            background-color: #f0f0f0; /* Light background color for input */
+            margin-right: 10px; /* Add right margin */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Match font family of chat */
+        }
+        #user-input:focus {
+            outline: none; /* Remove outline on focus */
+            border-color: #007bff; /* Change border color on focus */
+        }
+        #user-input::placeholder {
+            color: #aaa; /* Change placeholder color */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Match font family of chat */
+        }
+        #submit-btn {
+            padding: 10px 20px; /* Add padding */
+            background-color: #007bff; /* Change background color */
+            color: #fff; /* Change text color */
+            border: none; /* Remove border */
+            border-radius: 5px; /* Add border radius */
+            cursor: pointer; /* Change cursor */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Match font family of chat */
+        }
+        #submit-btn:hover {
+            background-color: #0056b3; /* Change background color on hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div id="chat-display"></div>
+        <form id="chat-form">
+            <div id="user-input-container">
+                <input type="text" id="user-input" placeholder="Ask me anything...">
+                <button type="submit" id="submit-btn">Generate</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            displayBotMessage("Hi, I'm climateAIBot. How can I help you?");
+        });
+
+        document.getElementById("chat-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+            var userInput = document.getElementById("user-input").value;
+            displayUserMessage(userInput);
+            document.getElementById("submit-btn").innerText = "Generating..."; // Change button text to "Generating..."
+            fetch('/get-answer/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')  // Get CSRF token from cookie
+                },
+                body: JSON.stringify({
+                    'question': userInput
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                displayBotMessage(data.answer);
+                document.getElementById("submit-btn").innerText = "Generate"; // Change button text back to "Generate"
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById("submit-btn").innerText = "Generate"; // Change button text back to "Generate" in case of error
+            });
+            document.getElementById("user-input").value = "";
+        });
+
+        function displayUserMessage(message) {
+            var chatDisplay = document.getElementById("chat-display");
+            var userBubble = document.createElement("div");
+            userBubble.classList.add("chat-bubble", "user-bubble");
+            userBubble.innerHTML = '<div class="chat-avatar user-avatar"><img src="{% static "images/human.png" %}" alt="User Avatar"></div>' + message;
+            chatDisplay.appendChild(userBubble);
+        }
+
+        function displayBotMessage(message) {
+            var chatDisplay = document.getElementById("chat-display");
+            var botBubble = document.createElement("div");
+            botBubble.classList.add("chat-bubble", "bot-bubble");
+            botBubble.innerHTML = '<div class="chat-avatar bot-avatar"><img src="{% static "images/Bot.png" %}" alt="Bot Avatar"></div>' + message;
+            chatDisplay.appendChild(botBubble);
+        }
+
+        // Function to get CSRF token from cookie
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+</body>
+</html>
