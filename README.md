@@ -15,6 +15,7 @@
 7. Run the command **python manage.py runserver** to deploy the chatbot in **localhost:8000**
 8. Open **localhost:8000** to interact and learn with ClimateAIBot.
 <br/>
+
 ### Note
 Add your HUGGINGFACEHUB_API_TOKEN inside **chatmodel.py**. 
 <br/>
